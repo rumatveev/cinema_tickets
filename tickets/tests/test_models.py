@@ -7,3 +7,7 @@ class TestModel(TestCase):
         factories.MovieFactory.create_batch(2, active=True)
         factories.MovieFactory(active=False)
         self.assertEqual(len(models.Movie.mv_objects.active()), 2)
+
+    def test_can_create_showing(self):
+        showing = factories.ShowingFactory()
+        self.assertEqual(len(models.Movie.objects.all()), 1)

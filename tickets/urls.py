@@ -6,6 +6,7 @@ from tickets import endpoints
 router = routers.DefaultRouter()
 router.register(r'movies', endpoints.MovieViewSet, basename='movies')
 router.register(r'rooms', endpoints.ShowingRoomViewSet, basename='rooms')
+router.register(r'showings', endpoints.ShowingViewSet, basename='showings')
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='tickets/home.html'), name='home'),

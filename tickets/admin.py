@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Movie
+from .models import Movie, Showing
 
 
 class MovieAdmin(admin.ModelAdmin):
@@ -10,3 +10,14 @@ class MovieAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Movie, MovieAdmin)
+
+
+class ShowingAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price_per_ticket', 'movie', 'showing_room', 'remaining_seats',
+                    'start', 'end', 'status')
+    list_filter = ('movie', 'showing_room', 'status')
+    search_fields = ('movie',)
+    ordering = ('id',)
+
+
+admin.site.register(Showing, ShowingAdmin)

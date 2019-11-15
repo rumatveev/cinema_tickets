@@ -1,8 +1,6 @@
 import factory
 import factory.fuzzy
 from . import models
-import datetime
-from datetime import timedelta
 
 
 class MovieFactory(factory.django.DjangoModelFactory):
@@ -24,3 +22,9 @@ class ShowingRoomFactory(factory.django.DjangoModelFactory):
 class ShowingFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Showing
+
+    price_per_ticket = factory.fuzzy.FuzzyDecimal(10.0, 50.0)
+    movie = factory.SubFactory(MovieFactory)
+    showing_room = factory.SubFactory(ShowingRoomFactory)
+    start = '2019-10-25 14:30'
+    end = '2019-10-25 15:30'

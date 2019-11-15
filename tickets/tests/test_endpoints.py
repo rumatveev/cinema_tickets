@@ -2,10 +2,10 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from tickets import models, factories
-import json
 
 
 class TestEndpoints(APITestCase):
+
     def test_movie_flow(self):
         for i in range(10):
             factories.MovieFactory()
@@ -28,5 +28,21 @@ class TestEndpoints(APITestCase):
         self.assertEqual(models.ShowingRoom.objects.get().showing_room_name, 'Argentina')
 
         response = self.client.get(reverse("rooms-list"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_showings(self):
+        movie = factories.MovieFactory()
+        room = factories.ShowingRoomFactory()
+        showing = {
+            "price_per_ticket": "10",
+            "movie": movie.id,
+            "showing_room": room.id,
+            "remaining_seats": "20",
+            "start": "2019-10-25 14:30",
+            "end": "2019-10-25 15:30"
+        }
+        response = self.client.post(reverse("showings-list"), showing, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = self.client.get(reverse("showings-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
