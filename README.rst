@@ -49,7 +49,6 @@ Format for creating a new Showing (you have to know movie Id and room id beforeh
 - "price_per_ticket": "10"
 - "movie": movie.id
 - "showing_room": room.id
-- "remaining_seats": "20"
 - "start": "2019-10-25 14:30"
 - "end": "2019-10-25 15:30"
 

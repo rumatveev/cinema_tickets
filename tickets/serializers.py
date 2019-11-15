@@ -36,6 +36,8 @@ class ShowingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"This date and time is already booked at {data['showing_room']}!")
         if data['start'] == data['end']:
             raise serializers.ValidationError(f"Start and end should not be the same!")
+        if data['end'] < data['start']:
+            raise serializers.ValidationError(f"Wrong Date Format!")
         return data
 
 
