@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .serializers import MovieSerializer, ShowingRoomSerializer, ShowingSerializer
-from .models import Movie, ShowingRoom,Showing
+from .serializers import (MovieSerializer, ShowingRoomSerializer, ShowingSerializer, OrderSerializer)
+from .models import (Movie, ShowingRoom, Showing, Order)
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -25,3 +25,11 @@ class ShowingViewSet(viewsets.ModelViewSet):
     """
     queryset = Showing.objects.filter(status=10).order_by('id')
     serializer_class = ShowingSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    Here we can create new orders and get the list of the past orders
+    """
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer

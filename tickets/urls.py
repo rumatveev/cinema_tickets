@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 router.register(r'movies', endpoints.MovieViewSet, basename='movies')
 router.register(r'rooms', endpoints.ShowingRoomViewSet, basename='rooms')
 router.register(r'showings', endpoints.ShowingViewSet, basename='showings')
+router.register(r'order', endpoints.OrderViewSet, basename='order')
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='tickets/home.html'), name='home'),

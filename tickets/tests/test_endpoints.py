@@ -30,7 +30,7 @@ class TestEndpoints(APITestCase):
         response = self.client.get(reverse("rooms-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_showings(self):
+    def test_new_showings(self):
         movie = factories.MovieFactory()
         room = factories.ShowingRoomFactory()
         showing = {
@@ -44,4 +44,21 @@ class TestEndpoints(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response = self.client.get(reverse("showings-list"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_orders(self):
+        factories.OrderFactory()
+        response = self.client.get(reverse("order-list"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_post_new_order(self):
+        showing = factories.ShowingFactory()
+        order = {
+            "email": "test@test.com",
+            "showing": showing.id,
+            "quantity": '1',
+        }
+
+        response = self.client.post(reverse("order-list"), order, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 

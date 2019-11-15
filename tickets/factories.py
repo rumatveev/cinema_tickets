@@ -28,3 +28,12 @@ class ShowingFactory(factory.django.DjangoModelFactory):
     showing_room = factory.SubFactory(ShowingRoomFactory)
     start = '2019-10-25 14:30'
     end = '2019-10-25 15:30'
+
+
+class OrderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Order
+
+    email = factory.Faker('email')
+    showing = factory.SubFactory(ShowingFactory)
+    quantity = factory.fuzzy.FuzzyInteger(1, 5)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie, ShowingRoom, Showing
+from .models import Movie, ShowingRoom, Showing, Order
 from django.db.models import Q
 
 
@@ -36,4 +36,19 @@ class ShowingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"This date and time is already booked at {data['showing_room']}!")
         if data['start'] == data['end']:
             raise serializers.ValidationError(f"Start and end should not be the same!")
+        return data
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['email', 'showing', 'quantity']
+
+    def validate(self, data):
+        # Check if we still have that amount of tickets for the showing.
+
+        showing = Showing.objects.get(id=data['showing'].id)
+
+        if data['quantity'] > showing.remaining_seats:
+            raise serializers.ValidationError(f"Njet, izvinite! No, we do not have so many tickets, sorry!")
         return data
