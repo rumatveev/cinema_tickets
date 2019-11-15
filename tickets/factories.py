@@ -1,6 +1,8 @@
 import factory
 import factory.fuzzy
 from . import models
+import datetime
+from datetime import timedelta
 
 
 class MovieFactory(factory.django.DjangoModelFactory):
@@ -16,5 +18,9 @@ class ShowingRoomFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.ShowingRoom
 
-    showing_room_name = factory.Iterator(["Argentina", "Canada", "France", "Italy", "Spain"])
     capacity = factory.fuzzy.FuzzyInteger(10, 50)
+
+
+class ShowingFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Showing
