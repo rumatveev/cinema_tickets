@@ -1,9 +1,21 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 
 class ActiveManager(models.Manager):
     def active(self):
         return self.filter(active=True)
+
+
+class ShowingRoom(models.Model):
+    """
+    This is a Showing Room model. Create one to accommodate customers and showings.
+    """
+    showing_room_name = models.CharField(max_length=32, unique=True, blank=False)
+    capacity = models.PositiveIntegerField(default=10, validators=[MinValueValidator(1)])
+
+    def __str__(self):
+        return self.showing_room_name
 
 
 class Movie(models.Model):
