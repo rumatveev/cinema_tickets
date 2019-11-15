@@ -37,7 +37,6 @@ class TestEndpoints(APITestCase):
             "price_per_ticket": "10",
             "movie": movie.id,
             "showing_room": room.id,
-            "remaining_seats": "20",
             "start": "2019-10-25 14:30",
             "end": "2019-10-25 15:30"
         }

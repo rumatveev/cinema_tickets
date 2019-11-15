@@ -77,3 +77,19 @@ class Showing(models.Model):
             self.name = slugify(self.movie.name + random_string())
             logger.info(f"Created new showing. Its name is {self.name}. Spasibo!")
         super(Showing, self).save(*args, **kwargs)
+
+
+class Order(models.Model):
+    """
+    Paid Orders. I assume that the payment processing is not my headache in this challenge.
+    """
+    email = models.EmailField('email address')
+    showing = models.ForeignKey(Showing, on_delete=models.PROTECT)
+    # total of seats purchased
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    final_price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        self.final_price = self.showing.price_per_ticket * self.quantity
+        logger.info(f'Successfully placed new order №{self.id} for {self.showing.name}')
+        super(Order, self).save(*args, **kwargs)
