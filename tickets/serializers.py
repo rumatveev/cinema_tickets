@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Movie, ShowingRoom, Showing, Order
-from django.db.models import Q
+from django.db.models import Q, F
+from .models import Status
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -30,9 +31,11 @@ class ShowingSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # need this to catch overlapping: we do not want to schedule
         # different showings at the same place and time
-        if Showing.objects.filter(showing_room=data['showing_room']).filter(
+        if Showing.objects.filter(showing_room=data['showing_room'])\
+                .filter(
                 Q(start__gte=data['start'], start__lt=data['end']) |
-                Q(end__gt=data['start'], end__lte=data['end'])).exists():
+                Q(end__gt=data['start'], end__lte=data['end']))\
+                .exists():
             raise serializers.ValidationError(f"This date and time is already booked at {data['showing_room']}!")
         if data['start'] == data['end']:
             raise serializers.ValidationError(f"Start and end should not be the same!")
@@ -45,6 +48,16 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['email', 'showing', 'quantity']
+
+    def create(self, validated_data):
+        # An alternative way to change remaining_seats without signals
+        showing = Showing.objects.get(id=validated_data['showing'].id)
+        showing.remaining_seats = showing.remaining_seats - validated_data['quantity']
+        if showing.remaining_seats == 0:
+            showing.status = Status.SOLD_OUT.value
+
+        showing.save()
+        return Order.objects.create(**validated_data)
 
     def validate(self, data):
         # Check if we still have that amount of tickets for the showing.

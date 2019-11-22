@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .serializers import (MovieSerializer, ShowingRoomSerializer, ShowingSerializer, OrderSerializer)
-from .models import (Movie, ShowingRoom, Showing, Order)
+from .models import (Movie, ShowingRoom, Showing, Order, Status)
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -23,7 +23,8 @@ class ShowingViewSet(viewsets.ModelViewSet):
     """
     This endpoint will return those showings which are not sold out and relevant
     """
-    queryset = Showing.objects.filter(status=10).order_by('id')
+    queryset = Showing.objects.filter(status=Status.ACTIVE.value).order_by('id')\
+        .select_related('movie').select_related('showing_room')   # a good way to reduce identical requests to db
     serializer_class = ShowingSerializer
 
 

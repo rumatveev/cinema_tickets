@@ -4,7 +4,7 @@ from django.utils.text import slugify
 import logging
 import random
 import string
-
+from enum import Enum
 
 logger = logging.getLogger(__name__)
 
@@ -47,15 +47,19 @@ class Movie(models.Model):
     mv_objects = ActiveManager()
 
 
+class Status(Enum):
+    # helper class for Showing model status(choices) field
+    ACTIVE = 10
+    OUTDATED = 20  # for this I would rather run a celery task
+    SOLD_OUT = 30
+
+
 class Showing(models.Model):
     """
     This is our product would be: combination of a movie and a seat.
     """
-    ACTIVE = 10
-    OUTDATED = 20  # for this I would rather run a celery task
-    SOLD_OUT = 30
-    STATUSES = ((ACTIVE, "Active"), (OUTDATED, "Past"), (SOLD_OUT, "Sold Out"))
-    status = models.IntegerField(choices=STATUSES, default=ACTIVE)
+    STATUSES = ((Status.ACTIVE.value, "Active"), (Status.OUTDATED.value, "Past"), (Status.SOLD_OUT.value, "Sold Out"))
+    status = models.IntegerField(choices=STATUSES, default=Status.ACTIVE.value)
 
     name = models.CharField(max_length=100)
     price_per_ticket = models.DecimalField(max_digits=6, decimal_places=2)
